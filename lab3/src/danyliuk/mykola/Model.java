@@ -21,16 +21,13 @@ public class Model {
     public void simulate(double time) {
 
         while (tcurr < time) {
-            findClosestElement();
-
-            System.out.println("\nIt's time for event in " +
-                    currentElement.getName() +
-                    ", time =   " + tnext);
-            list.forEach(e -> e.doStatistics(tnext - tcurr));
+            findClosestElement(); // визначення найближчої подї
+            list.forEach(e -> e.doStatistics(tnext - tcurr)); // просування часу
             tcurr = tnext;
             list.forEach(e -> e.setTcurr(tcurr));
-            currentElement.outAct();
+            currentElement.outAct(); // здійснення відповідної події
 
+            // здійснення відповідної події для всіх елементів, час наступної події яких співпадає з поточним моментом часу.
             for (Element e : list) {
                 if (e.getTnext() == tcurr) {
                     e.outAct();
@@ -49,6 +46,9 @@ public class Model {
                 currentElement = e;
             }
         }
+        System.out.println("\nIt's time for event in " +
+                currentElement.getName() +
+                ", time =   " + tnext);
     }
 
     public void printInfo() {
@@ -62,11 +62,7 @@ public class Model {
         for (Element e : list) {
             e.printResult();
             if (e instanceof Process) {
-                Process p = (Process) e;
-                System.out.println("mean length of queue = " +
-                        p.getMeanQueue() / tcurr
-                        + "\nfailure probability  = " +
-                        p.getFailure() / (double) p.getQuantity());
+                ((Process) e).printProcessResult();
             }
         }
     }

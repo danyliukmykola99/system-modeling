@@ -21,8 +21,8 @@ public class Process extends Element {
             state = 1;
             tnext = tcurr + super.getDelay();
         } else {
-            if (getQueue() < getMaxqueue()) {
-                setQueue(getQueue() + 1);
+            if (queue < maxqueue) {
+                queue++;
             } else {
                 failure++;
             }
@@ -35,32 +35,12 @@ public class Process extends Element {
         tnext = Double.MAX_VALUE;
         state = 0;
 
-        if (getQueue() > 0) {
-            setQueue(getQueue() - 1);
+        if (queue > 0) {
+            queue--;
             state = 1;
             tnext = tcurr + super.getDelay();
         }
     }
-
-
-    public int getFailure() {
-        return failure;
-    }
-
-    public int getQueue() {
-        return queue;
-    }
-
-
-    public void setQueue(int queue) {
-        this.queue = queue;
-    }
-
-
-    public int getMaxqueue() {
-        return maxqueue;
-    }
-
 
     public void setMaxqueue(int maxqueue) {
         this.maxqueue = maxqueue;
@@ -69,7 +49,7 @@ public class Process extends Element {
     @Override
     public void printInfo() {
         super.printInfo();
-        System.out.println("failure = " + this.getFailure());
+        System.out.println("failure = " + failure);
     }
 
     @Override
@@ -77,7 +57,10 @@ public class Process extends Element {
         meanQueue = meanQueue + queue * delta;
     }
 
-    public double getMeanQueue() {
-        return meanQueue;
+    public void printProcessResult(){
+        System.out.println("mean length of queue = " +
+                meanQueue / tcurr
+                + "\nfailure probability  = " +
+                failure / (double) quantity);
     }
 }

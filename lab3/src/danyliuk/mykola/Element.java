@@ -8,7 +8,7 @@ public class Element {
     protected double tnext;
     private double delayMean, delayDev;
     private String distribution;
-    private int quantity;
+    protected int quantity; // кількість виконань події
     protected double tcurr;
     protected int state;
     protected Element nextElement;
@@ -53,77 +53,40 @@ public class Element {
     }
 
     public double getDelay() {
-        double delay = getDelayMean();
-        if ("exp".equalsIgnoreCase(getDistribution())) {
-            delay = FunRand.Exp(getDelayMean());
+        double delay = delayMean;
+        if ("exp".equalsIgnoreCase(distribution)) {
+            delay = FunRand.Exp(delayMean);
         } else {
-            if ("norm".equalsIgnoreCase(getDistribution())) {
-                delay = FunRand.Norm(getDelayMean(),
-                        getDelayDev());
+            if ("norm".equalsIgnoreCase(distribution)) {
+                delay = FunRand.Norm(delayMean, delayDev);
             } else {
-                if ("unif".equalsIgnoreCase(getDistribution())) {
-                    delay = FunRand.Unif(getDelayMean(),
-                            getDelayDev());
+                if ("unif".equalsIgnoreCase(distribution)) {
+                    delay = FunRand.Unif(delayMean, delayDev);
                 } else {
-                    if("".equalsIgnoreCase(getDistribution()))
-                        delay = getDelayMean();
+                    if("".equalsIgnoreCase(distribution))
+                        delay = delayMean;
                 }
             }
         }
         return delay;
     }
 
-
-
-
-    public double getDelayDev() {
-        return delayDev;
-    }
-
-    public void setDelayDev(double delayDev) {
-        this.delayDev = delayDev;
-    }
-
-    public String getDistribution() {
-        return distribution;
-    }
-
     public void setDistribution(String distribution) {
         this.distribution = distribution;
-    }
-
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public double getTcurr() {
-        return tcurr;
     }
 
     public void setTcurr(double tcurr) {
         this.tcurr = tcurr;
     }
 
-    public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-
-    public Element getNextElement() {
-        return nextElement;
-    }
-
     public void setNextElement(Element nextElement) {
         this.nextElement = nextElement;
     }
 
-    public void inAct() {
+    // вхід в елемент
+    public void inAct() {}
 
-    }
+    // вихід з елементу
     public void outAct(){
         quantity++;
     }
@@ -132,33 +95,16 @@ public class Element {
         return tnext;
     }
 
-
-    public void setTnext(double tnext) {
-        this.tnext = tnext;
-    }
-
-    public double getDelayMean() {
-        return delayMean;
-    }
-
-    public void setDelayMean(double delayMean) {
-        this.delayMean = delayMean;
-    }
-
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public void printResult(){
-        System.out.println(getName()+ "  quantity = "+ quantity);
+        System.out.println(name + "  quantity = "+ quantity);
     }
 
     public void printInfo(){
-        System.out.println(getName()+ " state= " +state+
+        System.out.println(name + " state= " +state+
                 " quantity = "+ quantity+
                 " tnext= "+tnext);
     }
