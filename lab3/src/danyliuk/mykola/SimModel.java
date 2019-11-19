@@ -12,7 +12,7 @@ public class SimModel {
         Process p = new Process(1.0);
         System.out.println("id0 = " + c.getId() + "   id1=" + p.getId());
         c.setNextElement(p);
-        p.setMaxqueue(5);
+        p.setMaxAllowedQueueLength(5);
         c.setName("CREATOR");
         p.setName("PROCESSOR");
         c.setDistribution("exp");

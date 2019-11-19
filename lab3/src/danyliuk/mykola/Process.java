@@ -5,14 +5,16 @@ package danyliuk.mykola;
  */
 public class Process extends Element {
 
-    private int queue, maxqueue, failure;
-    private double meanQueue;
+    private int currentQueueLength, maxAllowedQueueLength, unservedQuantity;
+    private double meanQueueLength;
+    private int maxQueueLength; // максимальне значення черги
 
     public Process(double delay) {
         super(delay);
-        queue = 0;
-        maxqueue = Integer.MAX_VALUE;
-        meanQueue = 0.0;
+        currentQueueLength = 0;
+        maxAllowedQueueLength = Integer.MAX_VALUE;
+        meanQueueLength = 0.0;
+        maxQueueLength = 0;
     }
 
     @Override
@@ -21,10 +23,13 @@ public class Process extends Element {
             state = 1;
             tnext = tcurr + super.getDelay();
         } else {
-            if (queue < maxqueue) {
-                queue++;
+            if (currentQueueLength < maxAllowedQueueLength) {
+                currentQueueLength++;
+                if(currentQueueLength > maxQueueLength){
+                    maxQueueLength = currentQueueLength;
+                }
             } else {
-                failure++;
+                unservedQuantity++;
             }
         }
     }
@@ -35,32 +40,44 @@ public class Process extends Element {
         tnext = Double.MAX_VALUE;
         state = 0;
 
-        if (queue > 0) {
-            queue--;
+        if (currentQueueLength > 0) {
+            currentQueueLength--;
             state = 1;
             tnext = tcurr + super.getDelay();
         }
     }
 
-    public void setMaxqueue(int maxqueue) {
-        this.maxqueue = maxqueue;
+    public void setMaxAllowedQueueLength(int maxAllowedQueueLength) {
+        this.maxAllowedQueueLength = maxAllowedQueueLength;
     }
 
     @Override
     public void printInfo() {
         super.printInfo();
-        System.out.println("failure = " + failure);
+        System.out.println("failure = " + unservedQuantity + " queue = " + currentQueueLength);
     }
 
     @Override
     public void doStatistics(double delta) {
-        meanQueue = meanQueue + queue * delta;
+        meanQueueLength = meanQueueLength + currentQueueLength * delta;
     }
 
     public void printProcessResult(){
-        System.out.println("mean length of queue = " +
-                meanQueue / tcurr
-                + "\nfailure probability  = " +
-                failure / (double) quantity);
+        System.out.println("Середнє спостережуване значення черги = " + getAverageLengthOfQueue());
+        System.out.println("Ймовірність відмови в обслуговуванню = " + getFailureProbability());
+        System.out.println("Максимальне спостережуване значення черги = " + maxQueueLength);
+        System.out.println("Середній час очікування = " + getAverageWaitingTime());
+    }
+
+    private double getAverageLengthOfQueue(){
+        return meanQueueLength / tcurr;
+    }
+
+    private double getFailureProbability() {
+        return unservedQuantity / (double) quantity;
+    }
+
+    private double getAverageWaitingTime(){
+        return meanQueueLength / (double) (quantity- unservedQuantity);
     }
 }

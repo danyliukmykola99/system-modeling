@@ -5,7 +5,7 @@ package danyliuk.mykola;
  */
 public class Model {
     private double tnext;
-    private double tcurr;
+    private double tcurr; // поточний час
     private double t0, t1;
     private double delayCreate, delayProcess;
     private int numCreate, numProcess, failure;
@@ -30,6 +30,7 @@ public class Model {
     }
 
     public void simulate(double timeModeling){
+        // доки поточний час менший за час моделювання
         while(tcurr<timeModeling){
 
             tnext = t0;
@@ -65,7 +66,7 @@ public class Model {
             t1 = tcurr+getDelayOfProcess();
         } else {
             if(queue<maxqueue)
-                queue++;
+                queue++; // збільшити кількість елементів в черзі
             else
                 failure++;
         }
@@ -76,7 +77,7 @@ public class Model {
         t1 = Double.MAX_VALUE;
         state=0;
         if(queue>0){
-            queue--;
+            queue--; // зменшити кількість елементів в  черзі
             state=1;
             t1 = tcurr+getDelayOfProcess();
         }
