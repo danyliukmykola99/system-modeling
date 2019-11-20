@@ -5,7 +5,7 @@ package danyliuk.mykola;
  */
 public class Element {
     private String name;
-    protected double tnext;
+    protected double timeNext;
     private double delayMean, delayDev;
     private String distribution;
     protected int quantity; // кількість виконань події
@@ -15,24 +15,12 @@ public class Element {
     private static int nextId=0;
     private int id;
 
-    public Element(){
-
-        tnext = 0.0;
-        delayMean = 1.0;
-        distribution = "exp";
-        tcurr = tnext;
-        state=0;
-        nextElement=null;
-        id = nextId;
-        nextId++;
-        name = "element"+id;
-    }
     public Element(double delay){
         name = "anonymus";
-        tnext = 0.0;
+        timeNext = 0.0;
         delayMean = delay;
         distribution = "";
-        tcurr = tnext;
+        tcurr = timeNext;
         state=0;
         nextElement=null;
         id = nextId;
@@ -41,10 +29,10 @@ public class Element {
     }
     public Element(String nameOfElement, double delay){
         name = nameOfElement;
-        tnext = 0.0;
+        timeNext = 0.0;
         delayMean = delay;
         distribution = "exp";
-        tcurr = tnext;
+        tcurr = timeNext;
         state=0;
         nextElement=null;
         id = nextId;
@@ -91,8 +79,8 @@ public class Element {
         quantity++;
     }
 
-    public double getTnext() {
-        return tnext;
+    public double getTimeNext() {
+        return timeNext;
     }
 
     public int getId() {
@@ -106,7 +94,7 @@ public class Element {
     public void printInfo(){
         System.out.println(name + " state= " +state+
                 " quantity = "+ quantity+
-                " tnext= "+tnext);
+                " tnext= "+ timeNext);
     }
 
     public String getName() {

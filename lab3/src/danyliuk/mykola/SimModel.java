@@ -1,6 +1,7 @@
 package danyliuk.mykola;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mykola Danyliuk
@@ -8,19 +9,13 @@ import java.util.ArrayList;
 public class SimModel {
 
     public static void main(String[] args) {
-        Create c = new Create(2.0);
-        Process p = new Process(1.0);
+        Create c = new Create("CREATOR", 2.0);
+        Process p = new Process("PROCESSOR", 1.0);
         System.out.println("id0 = " + c.getId() + "   id1=" + p.getId());
         c.setNextElement(p);
         p.setMaxAllowedQueueLength(5);
-        c.setName("CREATOR");
-        p.setName("PROCESSOR");
-        c.setDistribution("exp");
-        p.setDistribution("exp");
 
-        ArrayList<Element> list = new ArrayList<>();
-        list.add(c);
-        list.add(p);
+        List<Element> list = Arrays.asList(c,p);
         Model model = new Model(list);
         model.simulate(1000.0);
 

@@ -5,14 +5,14 @@ package danyliuk.mykola;
  */
 public class Create extends Element {
 
-    public Create(double delay) {
-        super(delay);
+    public Create(String name, double delay) {
+        super(name, delay);
     }
 
     @Override
     public void outAct() {
         super.outAct();
-        tnext += super.getDelay();
+        timeNext += super.getDelay();
         nextElement.inAct();
     }
 }

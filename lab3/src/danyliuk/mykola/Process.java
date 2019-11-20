@@ -9,8 +9,8 @@ public class Process extends Element {
     private double meanQueueLength;
     private int maxQueueLength; // максимальне значення черги
 
-    public Process(double delay) {
-        super(delay);
+    public Process(String name, double delay) {
+        super(name, delay);
         currentQueueLength = 0;
         maxAllowedQueueLength = Integer.MAX_VALUE;
         meanQueueLength = 0.0;
@@ -21,7 +21,7 @@ public class Process extends Element {
     public void inAct() {
         if (state == 0) {
             state = 1;
-            tnext = tcurr + super.getDelay();
+            timeNext = tcurr + super.getDelay();
         } else {
             if (currentQueueLength < maxAllowedQueueLength) {
                 currentQueueLength++;
@@ -37,13 +37,13 @@ public class Process extends Element {
     @Override
     public void outAct() {
         super.outAct();
-        tnext = Double.MAX_VALUE;
+        timeNext = Double.MAX_VALUE;
         state = 0;
 
         if (currentQueueLength > 0) {
             currentQueueLength--;
             state = 1;
-            tnext = tcurr + super.getDelay();
+            timeNext = tcurr + super.getDelay();
         }
     }
 

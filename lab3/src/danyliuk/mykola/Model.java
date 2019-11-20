@@ -1,17 +1,18 @@
 package danyliuk.mykola;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mykola Danyliuk
  */
 public class Model {
 
-    private ArrayList<Element> list;
+    private List<Element> list;
     private double tnext, tcurr;
     private Element currentElement;
 
-    public Model(ArrayList<Element> elements) {
+    public Model(List<Element> elements) {
         list = elements;
         tnext = 0.0;
         tcurr = 0.0;
@@ -29,7 +30,7 @@ public class Model {
 
             // здійснення відповідної події для всіх елементів, час наступної події яких співпадає з поточним моментом часу.
             for (Element e : list) {
-                if (e.getTnext() == tcurr) {
+                if (e.getTimeNext() == tcurr) {
                     e.outAct();
                 }
             }
@@ -41,8 +42,8 @@ public class Model {
     private void findClosestElement(){
         tnext = Double.MAX_VALUE;
         for (Element e : list) {
-            if (e.getTnext() < tnext) {
-                tnext = e.getTnext();
+            if (e.getTimeNext() < tnext) {
+                tnext = e.getTimeNext();
                 currentElement = e;
             }
         }
