@@ -6,8 +6,8 @@ package danyliuk.mykola;
 public class SimSimple {
 
     public static void main(String[] args) {
-        Model model = new Model(2,1,5);
-        model.simulate(1000);
+        Model1 model = new Model1(1, 1, 5, 0, false, 0, 0);
+        model.simulate(5);
     }
 }
 
