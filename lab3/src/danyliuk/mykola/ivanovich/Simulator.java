@@ -15,7 +15,6 @@ public class Simulator {
 
     public void start(){
         Processor initialProcessor = processors.get(0);
-        String initialName = initialProcessor.getName();
 
         while (true) {
             Processor minTaskCompletionTimesProcessor = getMinTaskCompletionTimesProcessor();
@@ -29,16 +28,26 @@ public class Simulator {
             if(initialProcessor.getTaskCreationTime() < minCompletionTimeValue){
                 initialProcessor.create();
             } else {
-
+                minTaskCompletionTimesProcessor.complete();
+                if(minTaskCompletionTimesProcessor.hasNextProcessors()){
+                    minTaskCompletionTimesProcessor.getNextProcessor().create();
+                } else {
+                    minTaskCompletionTimesProcessor.dispose();
+                }
             }
-
 
         }
 
+        stats();
     }
 
     private Processor getMinTaskCompletionTimesProcessor(){
         return processors.stream().min(Comparator.comparing(Processor::getMinTaskCompletionTime)).get();
+    }
+
+    private void stats(){
+        System.out.println("=================");
+        processors.forEach(Processor::stats);
     }
 
 
