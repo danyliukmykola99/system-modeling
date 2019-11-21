@@ -24,6 +24,11 @@ public class Processor {
     private int failed;
 
     private double taskCreationTime;
+
+    public List<Double> getTaskCompletionTimes() {
+        return taskCompletionTimes;
+    }
+
     private List<Double> taskCompletionTimes;
     private int maxQueueLen;
 
@@ -144,15 +149,15 @@ public class Processor {
 
     public void stats(){
         if(avgCPULoad() > 0){
-            System.out.printf("Name: %s%n", name);
-            System.out.printf("Created: %d%n", created);
-            System.out.printf("Completed: %d%n", completed);
-            System.out.printf("Failed: %d%n", failed);
-            System.out.printf("Failure probability: %f%%n", calcFailureProbability());
-            System.out.printf("Average queue length: %f%n", calAvgQueueLen());
-            System.out.printf("Max queue length: %d%n", maxQueueLen);
-            System.out.printf("Average CPU load: %f%%n", avgCPULoad());
-            System.out.printf("Max CPU load: %dcores%n", maxCPULoad);
+            System.out.printf("Name: %s ", name);
+            System.out.printf("Created: %d ", created);
+            System.out.printf("Completed: %d ", completed);
+            System.out.printf("Failed: %d ", failed);
+            System.out.printf("Failure probability: %f ", calcFailureProbability());
+            System.out.printf("Average queue length: %f ", calAvgQueueLen());
+            System.out.printf("Max queue length: %d ", maxQueueLen);
+            System.out.printf("Average CPU load: %f ", avgCPULoad());
+            System.out.printf("Max CPU load: %d%n", maxCPULoad);
         }
     }
 

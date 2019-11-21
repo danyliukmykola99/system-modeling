@@ -30,7 +30,12 @@ public class Simulator {
             } else {
                 minTaskCompletionTimesProcessor.complete();
                 if(minTaskCompletionTimesProcessor.hasNextProcessors()){
-                    minTaskCompletionTimesProcessor.getNextProcessor().create();
+                    Processor next = minTaskCompletionTimesProcessor.getNextProcessor();
+                    if(next != null){
+                        next.create();
+                    } else {
+                        minTaskCompletionTimesProcessor.dispose();
+                    }
                 } else {
                     minTaskCompletionTimesProcessor.dispose();
                 }
@@ -42,7 +47,17 @@ public class Simulator {
     }
 
     private Processor getMinTaskCompletionTimesProcessor(){
-        return processors.stream().min(Comparator.comparing(Processor::getMinTaskCompletionTime)).get();
+        Double minValue = Double.MAX_VALUE;
+        Processor processorWithMinValue = processors.get(0);
+        for(Processor processor: processors){
+            for(Double taskCompletion: processor.getTaskCompletionTimes()){
+                if(taskCompletion < minValue){
+                    processorWithMinValue = processor;
+                    minValue = taskCompletion;
+                }
+            }
+        }
+        return processorWithMinValue;
     }
 
     private void stats(){
