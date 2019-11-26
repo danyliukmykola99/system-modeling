@@ -10,14 +10,15 @@ import java.util.function.Function;
 /**
  * @author Mykola Danyliuk
  */
-public class Transition implements Callable<Void> {
+public class Transition{
 
     private String name;
     private Double time;
     private List<InputArc> inputArcs;
     private List<OutputArc> outputArcs;
     private List<TestArc> testArcs;
-    private Boolean working;
+    private boolean working;
+    private double startTime;
 
     public Transition(String name, Double time) {
         this.name = name;
@@ -29,6 +30,14 @@ public class Transition implements Callable<Void> {
 
     public Transition(String name) {
         this(name, 0.0);
+    }
+
+    public Double getTime() {
+        return time;
+    }
+
+    public double getStartTime() {
+        return startTime;
     }
 
     public void addInputArc(Place place, Integer quantity){
@@ -52,7 +61,7 @@ public class Transition implements Callable<Void> {
     }
 
     public void executeIfInputArcsAreValid() throws InterruptedException {
-        if(isTransitionPermitted()){
+        if(isPermitted()){
             inputArcs.forEach(InputArc::execute);
             working = true;
             System.out.println(OffsetTime.now().toLocalTime() + " " + name);
@@ -62,7 +71,23 @@ public class Transition implements Callable<Void> {
         }
     }
 
-    private Boolean isTransitionPermitted(){
+    public void checkFinish(Double currentTime){
+        if(working && time <= currentTime - startTime){
+            System.out.printf("%3.1f %s%n", currentTime,  name);
+            working = false;
+            outputArcs.forEach(OutputArc::execute);
+        }
+    }
+
+    public void checkStart(Double currentTime){
+        if(!working && isPermitted()){
+            working = true;
+            inputArcs.forEach(InputArc::execute);
+            startTime = currentTime;
+        }
+    }
+
+    public Boolean isPermitted(){
         for(InputArc inputArc: inputArcs){
             if (!inputArc.isValid()){
                 return false;
@@ -74,20 +99,5 @@ public class Transition implements Callable<Void> {
             }
         }
         return true;
-    }
-
-    public boolean isEnabled(){
-        return working || isTransitionPermitted();
-    }
-
-    @Override
-    public Void call() throws Exception {
-        while(true){
-            try {
-                executeIfInputArcsAreValid();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

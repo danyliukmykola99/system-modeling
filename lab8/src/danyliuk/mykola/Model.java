@@ -1,11 +1,6 @@
 package danyliuk.mykola;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Mykola Danyliuk
@@ -13,28 +8,21 @@ import java.util.concurrent.Executors;
 public class Model {
 
     private List<Transition> transitions;
+    private Double currentTime;
+    private Double endTime;
 
     public Model(List<Transition> transitions) {
         this.transitions = transitions;
+        this.currentTime = 0.0;
+        this.endTime = 60.0;
     }
 
-    public void runTransitions(){
-        try {
-            ExecutorService executorService = Executors.newFixedThreadPool(transitions.size());
-            executorService.invokeAll(transitions);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void run(){
+        while (currentTime < endTime){
+            transitions.forEach(t -> t.checkFinish(currentTime));
+            transitions.forEach(t -> t.checkStart(currentTime));
+            currentTime += 0.1;
         }
-
-    }
-
-    private boolean isPresentEnabledTransition(){
-        for (Transition t : transitions) {
-            if (t.isEnabled()) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

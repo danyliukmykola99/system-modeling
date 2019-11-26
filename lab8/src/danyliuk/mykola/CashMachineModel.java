@@ -42,7 +42,7 @@ public class CashMachineModel {
     }
 
     public void run(){
-        model.runTransitions();
+        model.run();
     }
 
 }

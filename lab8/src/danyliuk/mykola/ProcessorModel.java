@@ -64,7 +64,7 @@ public class ProcessorModel {
     }
 
     public void run(){
-        model.runTransitions();
+        model.run();
     }
 
 }

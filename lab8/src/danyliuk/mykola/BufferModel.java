@@ -54,7 +54,7 @@ public class BufferModel {
     }
 
     public void run(){
-        model.runTransitions();
+        model.run();
     }
 
 }

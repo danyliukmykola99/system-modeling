@@ -79,7 +79,7 @@ public class MessengerModel {
     }
 
     public void run(){
-        model.runTransitions();
+        model.run();
     }
 
 
