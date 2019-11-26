@@ -1,4 +1,4 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
 /**
  * @author Mykola Danyliuk
@@ -15,15 +15,4 @@ public abstract class Arc {
     protected Transition transition;
     protected Integer quantity;
 
-    public Place getPlace() {
-        return place;
-    }
-
-    public Transition getTransition() {
-        return transition;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
 }

@@ -1,10 +1,13 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
-import java.time.OffsetTime;
+import danyliuk.mykola.model.InputArc;
+import danyliuk.mykola.model.OutputArc;
+import danyliuk.mykola.model.Place;
+import danyliuk.mykola.model.TestArc;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Function;
 
 /**
@@ -32,14 +35,6 @@ public class Transition{
         this(name, 0.0);
     }
 
-    public Double getTime() {
-        return time;
-    }
-
-    public double getStartTime() {
-        return startTime;
-    }
-
     public void addInputArc(Place place, Integer quantity){
         inputArcs.add(new InputArc(place, this, quantity));
     }
@@ -60,17 +55,6 @@ public class Transition{
         testArcs.add(new TestArc(place, this, function));
     }
 
-    public void executeIfInputArcsAreValid() throws InterruptedException {
-        if(isPermitted()){
-            inputArcs.forEach(InputArc::execute);
-            working = true;
-            System.out.println(OffsetTime.now().toLocalTime() + " " + name);
-            working = false;
-            Thread.sleep((long) (time*1000));
-            outputArcs.forEach(OutputArc::execute);
-        }
-    }
-
     public void checkFinish(Double currentTime){
         if(working && time <= currentTime - startTime){
             System.out.printf("%3.1f %s%n", currentTime,  name);
@@ -87,7 +71,7 @@ public class Transition{
         }
     }
 
-    public Boolean isPermitted(){
+    private boolean isPermitted(){
         for(InputArc inputArc: inputArcs){
             if (!inputArc.isValid()){
                 return false;

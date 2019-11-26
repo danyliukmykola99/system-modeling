@@ -1,4 +1,4 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
 /**
  * @author Mykola Danyliuk
@@ -21,10 +21,6 @@ public class Place {
 
     public Place(String name) {
         this(name, 0, 0);
-    }
-
-    public String getName() {
-        return name;
     }
 
     public Integer getQuantity() {

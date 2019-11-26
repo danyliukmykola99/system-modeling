@@ -1,4 +1,8 @@
-package danyliuk.mykola;
+package danyliuk.mykola.impl;
+
+import danyliuk.mykola.model.Model;
+import danyliuk.mykola.model.Place;
+import danyliuk.mykola.model.Transition;
 
 import java.util.Arrays;
 import java.util.List;

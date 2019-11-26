@@ -1,9 +1,11 @@
 package danyliuk.mykola;
 
+import danyliuk.mykola.impl.ProcessorModel;
+
 /**
  * @author Mykola Danyliuk
  */
-public class Application {
+public class ProcessorApplication {
 
     public static void main(String[] args){
 

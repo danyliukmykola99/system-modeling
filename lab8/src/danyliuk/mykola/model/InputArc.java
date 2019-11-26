@@ -1,4 +1,4 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
 /**
  * @author Mykola Danyliuk
@@ -17,7 +17,7 @@ public class InputArc extends Arc {
         return place.getQuantity() >= quantity;
     }
 
-    public synchronized void execute(){
+    public void execute(){
         int oldPlaceQuantity = place.getQuantity();
         place.setQuantity(oldPlaceQuantity - quantity);
     }
