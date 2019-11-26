@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 /**
  * @author Mykola Danyliuk
@@ -15,6 +16,7 @@ public class Transition implements Callable<Void> {
     private Double time;
     private List<InputArc> inputArcs;
     private List<OutputArc> outputArcs;
+    private List<TestArc> testArcs;
     private Boolean working;
 
     public Transition(String name, Double time) {
@@ -22,6 +24,7 @@ public class Transition implements Callable<Void> {
         this.time = time;
         this.inputArcs = Collections.synchronizedList(new ArrayList<>());
         this.outputArcs = Collections.synchronizedList(new ArrayList<>());
+        this.testArcs = Collections.synchronizedList(new ArrayList<>());
     }
 
     public Transition(String name) {
@@ -44,8 +47,12 @@ public class Transition implements Callable<Void> {
         outputArcs.add(new OutputArc(this, place));
     }
 
+    public void addTestArc(Place place, Function<Place,Boolean> function){
+        testArcs.add(new TestArc(place, this, function));
+    }
+
     public void executeIfInputArcsAreValid() throws InterruptedException {
-        if(isInputArcsValid()){
+        if(isTransitionPermitted()){
             inputArcs.forEach(InputArc::execute);
             working = true;
             System.out.println(OffsetTime.now().toLocalTime() + " " + name);
@@ -55,9 +62,14 @@ public class Transition implements Callable<Void> {
         }
     }
 
-    public Boolean isInputArcsValid(){
+    private Boolean isTransitionPermitted(){
         for(InputArc inputArc: inputArcs){
             if (!inputArc.isValid()){
+                return false;
+            }
+        }
+        for(TestArc testArc: testArcs){
+            if (!testArc.isValid()){
                 return false;
             }
         }
@@ -65,7 +77,7 @@ public class Transition implements Callable<Void> {
     }
 
     public boolean isEnabled(){
-        return working || isInputArcsValid();
+        return working || isTransitionPermitted();
     }
 
     @Override

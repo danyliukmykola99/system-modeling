@@ -16,6 +16,7 @@ public class OutputArc extends Arc {
     public synchronized void execute(){
         int oldPlaceQuantity = place.getQuantity();
         place.setQuantity(oldPlaceQuantity + quantity);
+        System.out.println(place);
     }
 
 }
