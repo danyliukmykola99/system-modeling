@@ -3,7 +3,7 @@ package danyliuk.mykola;
 /**
  * @author Mykola Danyliuk
  */
-public class Arc {
+public abstract class Arc {
 
     public Arc(Place place, Transition transition, Integer quantity) {
         this.place = place;

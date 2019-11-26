@@ -31,10 +31,6 @@ public class Place {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Place{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", quantity=").append(quantity);
-        sb.append('}');
-        return sb.toString();
+        return name + " " + quantity;
     }
 }

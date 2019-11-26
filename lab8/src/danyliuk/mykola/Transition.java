@@ -1,62 +1,79 @@
 package danyliuk.mykola;
 
+import java.time.OffsetTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * @author Mykola Danyliuk
  */
-public class Transition implements Runnable {
+public class Transition implements Callable<Void> {
 
     private String name;
     private Double time;
     private List<InputArc> inputArcs;
     private List<OutputArc> outputArcs;
+    private Boolean working;
 
     public Transition(String name, Double time) {
         this.name = name;
         this.time = time;
-        this.inputArcs = new ArrayList<>();
-        this.outputArcs = new ArrayList<>();
+        this.inputArcs = Collections.synchronizedList(new ArrayList<>());
+        this.outputArcs = Collections.synchronizedList(new ArrayList<>());
     }
 
     public Transition(String name) {
         this(name, 0.0);
     }
 
-    public void addInputArc(InputArc arc){
-        inputArcs.add(arc);
+    public void addInputArc(Place place, Integer quantity){
+        inputArcs.add(new InputArc(place, this, quantity));
     }
 
-    public void addOutputArc(OutputArc arc){
-        outputArcs.add(arc);
+    public void addInputArc(Place place){
+        inputArcs.add(new InputArc(place, this));
     }
 
-    public void executeIfEnabled() throws InterruptedException {
-        if(isEnabled()){
-            //System.out.println("Execute input arcs...");
+    public void addOutputArc(Place place, Integer quantity){
+        outputArcs.add(new OutputArc(this, place, quantity));
+    }
+
+    public void addOutputArc(Place place){
+        outputArcs.add(new OutputArc(this, place));
+    }
+
+    public void executeIfInputArcsAreValid() throws InterruptedException {
+        if(isInputArcsValid()){
             inputArcs.forEach(InputArc::execute);
-            //System.out.println("Execute transition...");
+            working = true;
+            System.out.println(OffsetTime.now().toLocalTime() + " " + name);
+            working = false;
             Thread.sleep((long) (time*1000));
-            //System.out.println("Execute output arcs...");
             outputArcs.forEach(OutputArc::execute);
         }
     }
 
-    public boolean isEnabled(){
+    public Boolean isInputArcsValid(){
         for(InputArc inputArc: inputArcs){
-            if (!inputArc.isEnabled()){
+            if (!inputArc.isValid()){
                 return false;
             }
         }
         return true;
     }
 
+    public boolean isEnabled(){
+        return working || isInputArcsValid();
+    }
+
     @Override
-    public void run() {
+    public Void call() throws Exception {
         while(true){
             try {
-                executeIfEnabled();
+                executeIfInputArcsAreValid();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
