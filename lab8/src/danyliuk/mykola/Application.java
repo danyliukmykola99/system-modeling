@@ -7,7 +7,7 @@ public class Application {
 
     public static void main(String[] args){
 
-        BufferModel model = new BufferModel();
+        ProcessorModel model = new ProcessorModel();
         model.run();
 
     }
