@@ -48,7 +48,7 @@ public class Processor {
     }
 
     public Double getMinTaskCompletionTime(){
-        return taskCompletionTimes.stream().min(Comparator.naturalOrder()).orElse(0.0);
+        return taskCompletionTimes.stream().min(Comparator.naturalOrder()).orElse(null);
     }
 
     public void create(){
@@ -68,7 +68,11 @@ public class Processor {
     }
 
     public void complete(){
-        data.setTime(getMinTaskCompletionTime());
+        if(getMinTaskCompletionTime()!=null){
+            data.setTime(getMinTaskCompletionTime());
+        } else {
+            data.setTime(data.getTime());
+        }
         if(this.queue != 0){
             getTaskFromQueue();
         }
@@ -153,10 +157,10 @@ public class Processor {
             System.out.printf("Created: %d ", created);
             System.out.printf("Completed: %d ", completed);
             System.out.printf("Failed: %d ", failed);
-            System.out.printf("Failure probability: %f ", calcFailureProbability());
-            System.out.printf("Average queue length: %f ", calAvgQueueLen());
+            System.out.printf("Failure probability: %10.3f ", calcFailureProbability());
+            System.out.printf("Average queue length: %10.3f ", calAvgQueueLen());
             System.out.printf("Max queue length: %d ", maxQueueLen);
-            System.out.printf("Average CPU load: %f ", avgCPULoad());
+            System.out.printf("Average CPU load: %10.3f ", avgCPULoad());
             System.out.printf("Max CPU load: %d%n", maxCPULoad);
         }
     }

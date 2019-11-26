@@ -1,6 +1,5 @@
 package danyliuk.mykola.ivanovich;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class Simulator {
@@ -13,31 +12,33 @@ public class Simulator {
         this.processors = processors;
     }
 
+    private Double minTaskCompletionTime;
+    private Processor minTaskCompletionTimeProcessor;
+
     public void start(){
         Processor initialProcessor = processors.get(0);
 
         while (true) {
-            Processor minTaskCompletionTimesProcessor = getMinTaskCompletionTimesProcessor();
-            Double minCompletionTimeValue = minTaskCompletionTimesProcessor.getMinTaskCompletionTime();
+            getMinTaskCompletionTimesProcessor();
 
             if(initialProcessor.getTaskCreationTime() > data.getTimeLimit() &&
-                    minCompletionTimeValue > data.getTimeLimit()){
+                    minTaskCompletionTime > data.getTimeLimit()){
                 break;
             }
 
-            if(initialProcessor.getTaskCreationTime() < minCompletionTimeValue){
+            if(initialProcessor.getTaskCreationTime() < minTaskCompletionTime){
                 initialProcessor.create();
             } else {
-                minTaskCompletionTimesProcessor.complete();
-                if(minTaskCompletionTimesProcessor.hasNextProcessors()){
-                    Processor next = minTaskCompletionTimesProcessor.getNextProcessor();
+                minTaskCompletionTimeProcessor.complete();
+                if(minTaskCompletionTimeProcessor.hasNextProcessors()){
+                    Processor next = minTaskCompletionTimeProcessor.getNextProcessor();
                     if(next != null){
                         next.create();
                     } else {
-                        minTaskCompletionTimesProcessor.dispose();
+                        minTaskCompletionTimeProcessor.dispose();
                     }
                 } else {
-                    minTaskCompletionTimesProcessor.dispose();
+                    minTaskCompletionTimeProcessor.dispose();
                 }
             }
 
@@ -46,18 +47,17 @@ public class Simulator {
         stats();
     }
 
-    private Processor getMinTaskCompletionTimesProcessor(){
-        Double minValue = Double.MAX_VALUE;
-        Processor processorWithMinValue = processors.get(0);
+    private void getMinTaskCompletionTimesProcessor(){
+        minTaskCompletionTime = Double.MAX_VALUE;
+        minTaskCompletionTimeProcessor = processors.get(0);
         for(Processor processor: processors){
             for(Double taskCompletion: processor.getTaskCompletionTimes()){
-                if(taskCompletion < minValue){
-                    processorWithMinValue = processor;
-                    minValue = taskCompletion;
+                if(taskCompletion < minTaskCompletionTime){
+                    minTaskCompletionTimeProcessor = processor;
+                    minTaskCompletionTime = taskCompletion;
                 }
             }
         }
-        return processorWithMinValue;
     }
 
     private void stats(){
