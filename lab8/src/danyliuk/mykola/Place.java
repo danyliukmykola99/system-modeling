@@ -7,14 +7,20 @@ public class Place {
 
     private String name;
     private Integer quantity;
+    private Integer maxQuantity;
 
-    public Place(String name, Integer quantity) {
+    public Place(String name, Integer quantity, Integer maxQuantity) {
         this.name = name;
         this.quantity = quantity;
+        this.maxQuantity = maxQuantity;
+    }
+
+    public Place(String name, Integer quantity) {
+        this(name, quantity, 0);
     }
 
     public Place(String name) {
-        this(name, 0);
+        this(name, 0, 0);
     }
 
     public String getName() {

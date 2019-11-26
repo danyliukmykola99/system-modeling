@@ -10,7 +10,7 @@ public class Application {
 
     public static void main(String[] args){
 
-        CashMachineModel model = new CashMachineModel();
+        MessengerModel model = new MessengerModel();
         model.run();
 
     }
