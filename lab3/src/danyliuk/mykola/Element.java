@@ -1,43 +1,60 @@
 package danyliuk.mykola;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Mykola Danyliuk
  */
-public class Element {
-    private String name;
+public abstract class Element {
+    protected String name;
+    protected HashMap<Element, Double> nextElementsWithProbabilities;
     protected double timeNext;
     private double delayMean, delayDev;
     private String distribution;
     protected int quantity; // кількість виконань події
-    protected double tcurr;
-    protected int state;
-    protected Element nextElement;
-    private static int nextId=0;
-    private int id;
+    protected Double currentTime;
+    protected boolean working;
 
-    public Element(double delay){
-        name = "anonymus";
-        timeNext = 0.0;
-        delayMean = delay;
-        distribution = "";
-        tcurr = timeNext;
-        state=0;
-        nextElement=null;
-        id = nextId;
-        nextId++;
-        name = "element"+id;
-    }
     public Element(String nameOfElement, double delay){
-        name = nameOfElement;
-        timeNext = 0.0;
-        delayMean = delay;
-        distribution = "exp";
-        tcurr = timeNext;
-        state=0;
-        nextElement=null;
-        id = nextId;
-        nextId++;
-        name = "element"+id;
+        this.name = nameOfElement;
+        this.timeNext = this.delayDev = 0.0;
+        this.delayMean = delay;
+        this.distribution = "exp";
+        this.nextElementsWithProbabilities = new HashMap<>();
+    }
+
+    public void setCurrentTime(Double currentTime) {
+        this.currentTime = currentTime;
+    }
+
+    public void addNextElement(Element element, Double probability){
+        nextElementsWithProbabilities.put(element, probability);
+    }
+
+    public Element getNextElement(){
+        if(nextElementsWithProbabilities.isEmpty()){
+            return null;
+        }
+        double randValue = Math.random();
+        for(Map.Entry<Element, Double> entry: nextElementsWithProbabilities.entrySet()){
+            randValue -= entry.getValue();
+            if(randValue <= 0){
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public abstract void updateTimeNext();
+
+    public void inActNextElement(){
+        Element element = getNextElement();
+        if(element != null){
+            element.inAct();
+        } else {
+            System.out.println(name + " DISPOSE");
+        }
     }
 
     public double getDelay() {
@@ -63,49 +80,35 @@ public class Element {
         this.distribution = distribution;
     }
 
-    public void setTcurr(double tcurr) {
-        this.tcurr = tcurr;
-    }
-
-    public void setNextElement(Element nextElement) {
-        this.nextElement = nextElement;
+    public void setCurrentTime(double currentTime) {
+        this.currentTime = currentTime;
     }
 
     // вхід в елемент
-    public void inAct() {}
+    public abstract void inAct();
 
     // вихід з елементу
     public void outAct(){
+        System.out.printf("%3.3f OUT ACT %s%n",currentTime , name);
         quantity++;
+        updateTimeNext();
+        inActNextElement();
     }
 
     public double getTimeNext() {
         return timeNext;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public void printResult(){
-        System.out.println(name + "  quantity = "+ quantity);
+        System.out.println("-----------  " + name + "  ----------");
+        System.out.println("Кількість виконань події = " + quantity);
     }
 
-    public void printInfo(){
-        System.out.println(name + " state= " +state+
-                " quantity = "+ quantity+
-                " tnext= "+ timeNext);
-    }
+    public abstract void printInfo();
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void doStatistics(double delta){
-
-    }
+    public abstract void doStatistics(double delta);
 }

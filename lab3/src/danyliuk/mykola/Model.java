@@ -1,6 +1,6 @@
 package danyliuk.mykola;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -8,64 +8,53 @@ import java.util.List;
  */
 public class Model {
 
-    private List<Element> list;
-    private double tnext, tcurr;
+    private List<Element> elements;
+    private Double nextTime, currentTime;
     private Element currentElement;
 
     public Model(List<Element> elements) {
-        list = elements;
-        tnext = 0.0;
-        tcurr = 0.0;
+        this.elements = elements;
+        nextTime = 0.0;
+        currentTime = 0.0;
+        elements.forEach(e -> e.setCurrentTime(currentTime));
     }
-
 
     public void simulate(double time) {
 
-        while (tcurr < time) {
-            findClosestElement(); // визначення найближчої подї
-            list.forEach(e -> e.doStatistics(tnext - tcurr)); // просування часу
-            tcurr = tnext;
-            list.forEach(e -> e.setTcurr(tcurr));
-            currentElement.outAct(); // здійснення відповідної події
+        while (currentTime < time) {
+            findClosestElement(); // визначення найближчої події
+            elements.forEach(e -> e.doStatistics(nextTime - currentTime)); // просування часу
+
+            currentTime = nextTime;
+            elements.forEach(e -> e.setCurrentTime(currentTime));
+
+            // здійснення відповідної події
+            currentElement.outAct();
 
             // здійснення відповідної події для всіх елементів, час наступної події яких співпадає з поточним моментом часу.
-            for (Element e : list) {
-                if (e.getTimeNext() == tcurr) {
-                    e.outAct();
-                }
-            }
+            elements.stream().filter(e -> e.getTimeNext() == currentTime && e.getTimeNext() != 0.0)
+                    .forEachOrdered(Element::outAct);
+
+            // виведення результату після кожної прогонки
             printInfo();
         }
         printResult();
     }
 
     private void findClosestElement(){
-        tnext = Double.MAX_VALUE;
-        for (Element e : list) {
-            if (e.getTimeNext() < tnext) {
-                tnext = e.getTimeNext();
-                currentElement = e;
-            }
-        }
-        System.out.println("\nIt's time for event in " +
-                currentElement.getName() +
-                ", time =   " + tnext);
+        currentElement = elements.stream().min(Comparator.comparing(Element::getTimeNext)).get();
+        nextTime = currentElement.getTimeNext();
+        System.out.printf("%n%3.3f Next element: %s Next time: %3.3f%n",
+                currentTime, currentElement.getName(), nextTime);
     }
 
     public void printInfo() {
-        for (Element e : list) {
-            e.printInfo();
-        }
+        elements.forEach(Element::printInfo);
     }
 
     public void printResult() {
         System.out.println("\n-------------RESULTS-------------");
-        for (Element e : list) {
-            e.printResult();
-            if (e instanceof Process) {
-                ((Process) e).printProcessResult();
-            }
-        }
+        elements.forEach(Element::printResult);
     }
 }
 

@@ -12,16 +12,17 @@ public class Process extends Element {
     public Process(String name, double delay) {
         super(name, delay);
         currentQueueLength = 0;
-        maxAllowedQueueLength = Integer.MAX_VALUE;
+        maxAllowedQueueLength = 3;
         meanQueueLength = 0.0;
         maxQueueLength = 0;
     }
 
     @Override
     public void inAct() {
-        if (state == 0) {
-            state = 1;
-            timeNext = tcurr + super.getDelay();
+        System.out.printf("%3.3f IN ACT %s%n",currentTime , name);
+        if (!working) {
+            working = true;
+            timeNext = currentTime + super.getDelay();
         } else {
             if (currentQueueLength < maxAllowedQueueLength) {
                 currentQueueLength++;
@@ -35,26 +36,20 @@ public class Process extends Element {
     }
 
     @Override
-    public void outAct() {
-        super.outAct();
+    public void updateTimeNext() {
         timeNext = Double.MAX_VALUE;
-        state = 0;
-
+        working = false;
         if (currentQueueLength > 0) {
             currentQueueLength--;
-            state = 1;
-            timeNext = tcurr + super.getDelay();
+            working = true;
+            timeNext = currentTime + super.getDelay();
         }
-    }
-
-    public void setMaxAllowedQueueLength(int maxAllowedQueueLength) {
-        this.maxAllowedQueueLength = maxAllowedQueueLength;
     }
 
     @Override
     public void printInfo() {
-        super.printInfo();
-        System.out.println("failure = " + unservedQuantity + " queue = " + currentQueueLength);
+        System.out.printf("%s working = %s quantity = %d tnext = %3.3f failure = %d queue = %d%n",
+                name, working, quantity, timeNext, unservedQuantity, currentQueueLength);
     }
 
     @Override
@@ -62,7 +57,8 @@ public class Process extends Element {
         meanQueueLength = meanQueueLength + currentQueueLength * delta;
     }
 
-    public void printProcessResult(){
+    public void printResult(){
+        super.printResult();
         System.out.println("Середнє спостережуване значення черги = " + getAverageLengthOfQueue());
         System.out.println("Ймовірність відмови в обслуговуванню = " + getFailureProbability());
         System.out.println("Максимальне спостережуване значення черги = " + maxQueueLength);
@@ -70,7 +66,7 @@ public class Process extends Element {
     }
 
     private double getAverageLengthOfQueue(){
-        return meanQueueLength / tcurr;
+        return meanQueueLength / currentTime;
     }
 
     private double getFailureProbability() {
@@ -80,4 +76,5 @@ public class Process extends Element {
     private double getAverageWaitingTime(){
         return meanQueueLength / (double) (quantity- unservedQuantity);
     }
+
 }

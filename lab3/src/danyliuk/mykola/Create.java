@@ -10,9 +10,19 @@ public class Create extends Element {
     }
 
     @Override
-    public void outAct() {
-        super.outAct();
+    public void updateTimeNext() {
         timeNext += super.getDelay();
-        nextElement.inAct();
     }
+
+    @Override
+    public void inAct() {}
+
+    @Override
+    public void printInfo() {
+        System.out.printf("%s working = %s quantity = %d tnext = %3.3f%n", name, working, quantity, timeNext);
+    }
+
+    @Override
+    public void doStatistics(double delta) {}
+
 }
