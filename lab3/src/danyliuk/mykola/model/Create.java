@@ -1,4 +1,4 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
 /**
  * @author Mykola Danyliuk

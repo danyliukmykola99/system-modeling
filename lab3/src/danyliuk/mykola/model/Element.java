@@ -1,4 +1,4 @@
-package danyliuk.mykola;
+package danyliuk.mykola.model;
 
 import java.util.HashMap;
 import java.util.Map;
