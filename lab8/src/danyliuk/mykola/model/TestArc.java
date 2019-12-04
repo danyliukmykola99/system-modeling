@@ -5,17 +5,16 @@ import java.util.function.Function;
 /**
  * @author Mykola Danyliuk
  */
-public class TestArc extends Arc {
+public class TestArc extends InputArc {
 
-    private Function<Place,Boolean>  function;
-
-    public TestArc(Place place, Transition transition, Function<Place,Boolean> function) {
-        super(place, transition, 1);
-        this.function = function;
+    public TestArc(Place place, Transition transition, Integer quantity) {
+        super(place, transition, quantity);
     }
 
-    public Boolean isValid(){
-        return function.apply(place);
+    public TestArc(Place place, Transition transition) {
+        super(place, transition);
     }
+
+    public void execute(){}
 
 }

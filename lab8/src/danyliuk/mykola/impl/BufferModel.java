@@ -35,19 +35,20 @@ public class BufferModel {
         List<Transition> transitions = Arrays.asList(transition1, transition2, transition3, transition4, transition5);
 
         transition1.addInputArc(place1);
-        transition1.addTestArc(place2, place -> place.getQuantity() == 1);
+        transition1.addTestArc(place2);
         transition1.addOutputArc(place1);
         transition1.addOutputArc(place4);
 
-        transition2.addTestArc(place3, place -> place.getQuantity() == 1);
+        transition2.addTestArc(place3);
         transition2.addInputArc(place4);
         transition2.addOutputArc(place5);
 
-        transition3.addTestArc(place4, place -> place.getQuantity() == 0);
+        transition3.addTestArc(place4, 0);
         transition3.addInputArc(place7);
         transition3.addOutputArc(place6);
 
-        transition4.addTestArc(place4, place -> place.getQuantity() == n);
+        transition4.addTestArc(place4, n);
+        transition4.addTestArc(place3);
         transition4.addOutputArc(place5);
 
         transition5.addInputArc(place6);

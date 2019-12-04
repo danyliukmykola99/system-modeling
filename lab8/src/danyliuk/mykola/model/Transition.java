@@ -51,8 +51,12 @@ public class Transition{
         outputArcs.add(new OutputArc(this, place));
     }
 
-    public void addTestArc(Place place, Function<Place,Boolean> function){
-        testArcs.add(new TestArc(place, this, function));
+    public void addTestArc(Place place){
+        testArcs.add(new TestArc(place, this));
+    }
+
+    public void addTestArc(Place place, Integer quantity){
+        testArcs.add(new TestArc(place, this, quantity));
     }
 
     public void checkFinish(Double currentTime){
